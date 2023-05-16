@@ -1,6 +1,6 @@
 .chat{
     flex: .64;
-    border-right: 1px solid lightgray;
+    
     display: flex;
     flex-direction: column;
 }
@@ -108,14 +108,18 @@
 }
 
 .chat_timestamp{
-    position: absolute;
+    /* position: absolute; */
     bottom: -20px;
     font-size: 10px;
     color: gray;
+    width: 30vw;
+    margin-left: 10px;
+    /* text-align: right */
+    /* margin-right: 40vw; */
 }
-.chat_timestamp > p{
+/* .chat_timestamp > p{
     margin: 0;
-}
+} */
 .chat_footer{
     display: flex;
     align-items: center;

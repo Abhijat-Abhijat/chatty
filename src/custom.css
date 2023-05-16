@@ -4,4 +4,19 @@
     align-items: center;
     justify-content: space-evenly;
     flex: .01;
+    /* border: 1px solid lightgray; */
+}
+.active{
+    /* background-color: #ebebeb; */
+    flex: .6;
+    align-items: start;
+}
+
+.custom .MuiSvgIcon-root{
+    font-size: 2rem !important; 
+    padding: 0 1rem;
+    /* color: #ebebeb; */
+
+    /* height: 50px; */
+    /* width: 50px; */
 }

@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
 import "./Chat.css";
+import { useParams } from "react-router-dom";
+import db from "./firebase";
+import { useStateValue } from "./StateProvider";
+import firebase from "firebase/compat/app";
 import { IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -11,11 +15,26 @@ function Chat() {
   const [input, setInput] = useState("");
   const [search, setSearch] = useState("");
   const [seed, setSeed] = useState("");
+  const { roomId } = useParams();
+  const [roomName, setRoomName] = useState("");
+  const [messages, setMessages] = useState([]);
+  const [{ user }] = useStateValue();
   const [showDropdown, setShowDropdown] = useState(false); 
   const [showSearch, setShowSearch] = useState(false); 
+  useEffect (() => {
+    if(roomId){
+      db.collection('rooms').doc(roomId).onSnapshot(snapshot => (
+        setRoomName(snapshot.data().name)
+      ))
+      db.collection('rooms').doc(roomId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snapshot => (
+        setMessages(snapshot.docs.map(doc => doc.data()))
+      ))
+    }
+  }, [roomId])
+
   useEffect(() => {
     setSeed((Math.random() + 1).toString(36).substring(7));
-  }, []);
+  }, [roomId]);
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown); 
@@ -25,6 +44,13 @@ function Chat() {
   };
   const sendMessage = (e) => {
     e.preventDefault();
+    console.log("You typed >>>", input);
+
+    db.collection("rooms").doc(roomId).collection("messages").add({
+      message: input,
+      name: user.displayName,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
     setInput("");
   };
   const sendsearch = (e) => {
@@ -40,8 +66,13 @@ function Chat() {
           alt=""
         />
         <div className="chat_header_info">
-          <h2>Room Name</h2>
-          <p>Last Seen at ...</p>
+          <h2>{roomName}</h2>
+          <p>
+            Last seen{" "}
+            {new Date(
+              messages[messages.length - 1]?.timestamp?.toDate()
+            ).toUTCString()}
+          </p>
         </div>
         <div className="chat_header_right">
           <IconButton>
@@ -80,12 +111,18 @@ function Chat() {
         </div>
       </div>
       <div className="chat_body">
-        <p className={`chat_message ${true && "chat_receiver"}`}>
-          <span className="chat_name">Rahul</span>
-          Hey Guys
-          <span className="chat_timestamp">3:52pm</span>
+        {messages.map((message) => (
+
+        <p className={`chat_message ${message.name === user.displayName && "chat_receiver"}`}>
+          <span className="chat_name">{message.name}</span>
+          {message.message}
+          <span className="chat_timestamp">
+            {new Date(message.timestamp?.toDate()).toUTCString()}
+          </span>
         </p>
+        ))}
       </div>
+      
       <div className="chat_footer">
         <InsertEmoticonIcon />
         <form>

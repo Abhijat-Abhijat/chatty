@@ -3,6 +3,12 @@
     padding: 20px;
     cursor:pointer;
     border-bottom:1px solid #f6f6f6;
+    /* width: 20vw; */
+    /* overflow: hidden; */
+}
+a{
+    text-decoration: none !important;
+    color: black;
 }
 .sidebar_chat:hover{
     background-color: #ebebeb;
@@ -17,4 +23,11 @@
 .sidebar_chat_info > h2{
     font-size: 16px;
     margin-bottom: 8px;
+}
+.sidebar_chat_info > p{
+    font-size: 14px;
+    color: gray;
+    word-wrap: break-word;
+    overflow: hidden;
+    width: 20vw;
 }
